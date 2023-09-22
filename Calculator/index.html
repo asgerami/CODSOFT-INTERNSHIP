@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator</title>
+    <style>
+        body {
+            background-color: lightblue;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        #calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 10px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            background-color: #333;
+        }
+
+        .button {
+            font-size: 24px;
+            padding: 10px;
+            background-color: darkblue;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        #display {
+            grid-column: span 4;
+            font-size: 36px;
+            padding: 10px;
+            background-image: linear-gradient(lightblue, lightblue), linear-gradient(lightblue, lightblue);
+            background-size: 10px 10px;
+            color: black;
+            border: none;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div id="calculator">
+        <div id="display">0</div>
+        <button class="button" id="clear">C</button>
+        <button class="button" id="divide">/</button>
+        <button class="button" id="multiply">*</button>
+        <button class="button" id="equals">=</button>
+        <button class="button" id="7">7</button>
+        <button class="button" id="8">8</button>
+        <button class="button" id="9">9</button>
+        <button class="button" id="subtract">-</button>
+        <button class="button" id="4">4</button>
+        <button class="button" id="5">5</button>
+        <button class="button" id="6">6</button>
+        <button class="button" id="add">+</button>
+        <button class="button" id="1">1</button>
+        <button class="button" id="2">2</button>
+        <button class="button" id="3">3</button>
+        <button class="button" id="0">0</button>
+        <button class="button" id="decimal">.</button> <!-- Added the decimal button -->
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+        let currentInput = '';
+        let currentOperator = '';
+        let firstNumber = null;
+
+        function updateDisplay() {
+            display.textContent = currentInput || '0';
+        }
+
+        for (let i = 0; i <= 9; i++) {
+            const button = document.getElementById(i.toString());
+            button.addEventListener('click', () => {
+                currentInput += i;
+                updateDisplay();
+            });
+        }
+
+        const decimalButton = document.getElementById('decimal');
+        decimalButton.addEventListener('click', () => {
+            if (!currentInput.includes('.')) {
+                currentInput += '.';
+                updateDisplay();
+            }
+        });
+    
+
+        const operators = ['add', 'subtract', 'multiply', 'divide'];
+        for (const operator of operators) {
+            const button = document.getElementById(operator);
+            button.addEventListener('click', () => {
+                if (firstNumber === null) {
+                    firstNumber = parseFloat(currentInput);
+                    currentInput = '';
+                    currentOperator = operator;
+                } else {
+                    alert('Only one operation at a time. Press "=" to calculate.');
+                }
+            });
+        }
+
+        const equalsButton = document.getElementById('equals');
+        equalsButton.addEventListener('click', () => {
+            if (currentOperator && currentInput !== '') {
+                const secondNumber = parseFloat(currentInput);
+                switch (currentOperator) {
+                    case 'add':
+                        currentInput = (firstNumber + secondNumber).toString();
+                        break;
+                    case 'subtract':
+                        currentInput = (firstNumber - secondNumber).toString();
+                        break;
+                    case 'multiply':
+                        currentInput = (firstNumber * secondNumber).toString();
+                        break;
+                    case 'divide':
+                        if (secondNumber === 0) {
+                            alert("Cannot divide by zero!");
+                            clearButton.click();
+                            return;
+                        }
+                        currentInput = (firstNumber / secondNumber).toString();
+                        break;
+                }
+                firstNumber = null;
+                currentOperator = '';
+                updateDisplay();
+            }
+        });
+
+        const clearButton = document.getElementById('clear');
+        clearButton.addEventListener('click', () => {
+            currentInput = '';
+            currentOperator = '';
+            firstNumber = null;
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>
